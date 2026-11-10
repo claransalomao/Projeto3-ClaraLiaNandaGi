@@ -8,8 +8,8 @@
 
 **Entrega:** proposta validada, fluxo de telas, cadastro e login funcionando e entrevista por texto funcionando do início ao fim.
 
-- [ ] Validar a proposta com a professora
-- [ ] Criar o fluxo de telas
+- [x] Validar a proposta com a professora
+- [x] Criar o fluxo de telas
 - [ ] Configurar o backend e o frontend
 - [ ] Implementar cadastro e login
 - [ ] Implementar a análise da vaga com IA
