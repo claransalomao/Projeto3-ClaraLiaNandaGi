@@ -1,6 +1,7 @@
 [README.md](https://github.com/user-attachments/files/34628777/README.md)
 # Projeto3-ClaraLiaNandaGi
 # Ensaio — Simulador de Entrevistas com IA
+# Integrantes: Clara Salomão, Giovana Zani, Lia Haller, Maria Fernanda Morales
 
 ## Cronograma
 
