@@ -4,6 +4,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .analise_vaga import analisar_vaga
+from .gemini import GeminiError
+from .models import AnaliseVaga
 
 from .serializers import CadastroSerializer, LoginSerializer, UserSerializer
 
@@ -58,3 +62,37 @@ def api_logout(request):
 @permission_classes([IsAuthenticated])
 def api_me(request):
     return Response(UserSerializer(request.user).data)
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def api_vagas(request):
+    # GET: lista as análises do usuário logado
+    if request.method == 'GET':
+        analises = AnaliseVaga.objects.filter(usuario=request.user)
+        return Response(AnaliseVagaSerializer(analises, many=True).data)
+
+    # POST: analisa uma vaga nova com o Gemini
+    descricao = request.data.get('descricao', '').strip()
+    area = request.data.get('area', '')
+    nivel = request.data.get('nivel', '')
+
+    if len(descricao) < 80:
+        return Response({'detail': 'Cole a descrição completa da vaga.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        resultado = analisar_vaga(descricao, area, nivel)
+    except GeminiError as e:
+        return Response({'detail': str(e)}, status=e.status)
+
+    analise = AnaliseVaga.objects.create(
+        usuario=request.user, descricao=descricao, area=area, nivel=nivel, resultado=resultado,
+    )
+    return Response(AnaliseVagaSerializer(analise).data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_vaga(request, analise_id):
+    analise = get_object_or_404(AnaliseVaga, id=analise_id, usuario=request.user)
+    return Response(AnaliseVagaSerializer(analise).data)

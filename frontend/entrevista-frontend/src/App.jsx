@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import RotaProtegida from './components/RotaProtegida'
+import AnaliseVaga from './pages/AnaliseVaga'
 import Dashboard from './pages/Dashboard'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
@@ -15,6 +16,14 @@ function App() {
         element={
           <RotaProtegida>
             <Dashboard />
+          </RotaProtegida>
+        }
+      />
+      <Route
+        path="/vagas"
+        element={
+          <RotaProtegida>
+            <AnaliseVaga />
           </RotaProtegida>
         }
       />

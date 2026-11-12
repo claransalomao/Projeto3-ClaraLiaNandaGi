@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from .models import AnaliseVaga
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -43,3 +44,9 @@ class CadastroSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     senha = serializers.CharField(write_only=True)
+
+
+class AnaliseVagaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnaliseVaga
+        fields = ['id', 'descricao', 'area', 'nivel', 'resultado', 'criado_em']

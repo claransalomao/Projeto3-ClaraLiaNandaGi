@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import AppBar from '../../components/AppBar'
 import { useAuth } from '../../contexts/useAuth'
 
@@ -22,6 +23,12 @@ export default function Dashboard() {
               </span>
             </div>
             <p className="mt-4 text-gray-500">Em breve: escolha área, tipo de entrevista e entrevistador.</p>
+            <Link
+              to="/vagas"
+              className="mt-4 inline-block rounded-xl bg-primary px-5 py-3 font-semibold text-white hover:bg-primary-dark"
+            >
+              Analisar uma vaga com IA
+            </Link>
           </section>
 
           <aside className="rounded-2xl border border-gray-200 bg-white p-6">
