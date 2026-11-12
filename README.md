@@ -13,7 +13,7 @@
 - [x] Criar o fluxo de telas
 - [x] Configurar o backend e o frontend
 - [x] Implementar cadastro e login
-- [x] Implementar a análise da vaga com IA
+- [ ] Implementar a análise da vaga com IA
 - [ ] Implementar a entrevista com IA
 - [ ] Criar as telas de nova entrevista e de entrevista
 
