@@ -1,42 +1,60 @@
-from django.http import Http404
+from django.contrib.auth import authenticate
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Note
-from .serializers import NoteSerializer
+from .serializers import CadastroSerializer, LoginSerializer, UserSerializer
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def api_note(request, note_id):
-    try:
-        note = Note.objects.get(id=note_id)
-    except Note.DoesNotExist:
-        raise Http404()
-
-    if request.method == 'PUT':
-        new_note_data = request.data
-        note.title = new_note_data['title']
-        note.content = new_note_data['content']
-        note.save()
-
-    if request.method == 'DELETE':
-        note.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    serialized_note = NoteSerializer(note)
-    return Response(serialized_note.data)
+def resposta_com_token(user, status_code=status.HTTP_200_OK):
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response(
+        {'token': token.key, 'user': UserSerializer(user).data},
+        status=status_code,
+    )
 
 
-@api_view(['GET', 'POST'])
-def api_notes(request):
-    if request.method == 'POST':
-        new_note_data = request.data
-        Note.objects.create(
-            title=new_note_data['title'],
-            content=new_note_data['content'],
+# Endpoints públicos: ignoram o header Authorization (um token antigo salvo
+# no navegador não pode impedir o login/cadastro)
+@api_view(['POST'])
+@authentication_classes([])
+def api_cadastro(request):
+    serializer = CadastroSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    user = serializer.save()
+    return resposta_com_token(user, status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@authentication_classes([])
+def api_login(request):
+    serializer = LoginSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    user = authenticate(
+        username=serializer.validated_data['email'].lower().strip(),
+        password=serializer.validated_data['senha'],
+    )
+    if user is None:
+        return Response(
+            {'detail': 'E-mail ou senha incorretos.'},
+            status=status.HTTP_401_UNAUTHORIZED,
         )
+    return resposta_com_token(user)
 
-    notes = Note.objects.all()
-    serialized_notes = NoteSerializer(notes, many=True)
-    return Response(serialized_notes.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    request.user.auth_token.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_me(request):
+    return Response(UserSerializer(request.user).data)

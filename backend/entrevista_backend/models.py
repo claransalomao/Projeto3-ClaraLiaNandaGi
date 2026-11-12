@@ -1,9 +1,6 @@
 from django.db import models
 
-
-class Note(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-
-    def __str__(self):
-        return f'{self.id}. {self.title}'
+# Os usuários usam o model padrão do Django (django.contrib.auth.models.User):
+# - username = e-mail (usado no login)
+# - first_name = nome
+# Os models de entrevista serão adicionados nas próximas tarefas.
