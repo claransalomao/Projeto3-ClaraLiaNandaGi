@@ -11,9 +11,9 @@
 
 - [x] Validar a proposta com a professora
 - [x] Criar o fluxo de telas
-- [ ] Configurar o backend e o frontend
-- [ ] Implementar cadastro e login
-- [ ] Implementar a análise da vaga com IA
+- [x] Configurar o backend e o frontend
+- [x] Implementar cadastro e login
+- [x] Implementar a análise da vaga com IA
 - [ ] Implementar a entrevista com IA
 - [ ] Criar as telas de nova entrevista e de entrevista
 

@@ -2,3 +2,5 @@ django
 djangorestframework
 markdown
 django-filter
+django-cors-headers
+python-dotenv
