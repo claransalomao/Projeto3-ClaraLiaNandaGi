@@ -15,7 +15,7 @@
 - [x] Implementar cadastro e login
 - [x] Implementar a análise da vaga com IA
 - [x] Implementar a entrevista com IA
-- [ ] Criar as telas de nova entrevista e de entrevista
+- [x] Criar as telas de nova entrevista e de entrevista
 
 ### Sprint 2 (16/11 a 19/11)
 
