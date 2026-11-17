@@ -2,8 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from .models import AnaliseVaga, Entrevista, Pergunta
-
+from .models import AnaliseVaga, Entrevista, Pergunta, Relatorio
 
 class UserSerializer(serializers.ModelSerializer):
     nome = serializers.CharField(source='first_name')
@@ -99,3 +98,33 @@ class EntrevistaResumoSerializer(serializers.ModelSerializer):
             'id', 'area', 'tipos', 'entrevistador', 'entrevistador_nome', 'nivel',
             'num_perguntas', 'finalizada', 'criado_em', 'finalizada_em', 'nota_media',
         ]
+
+class RelatorioSerializer(serializers.ModelSerializer):
+    entrevista = EntrevistaResumoSerializer(read_only=True)
+    respostas = PerguntaSerializer(source='entrevista.perguntas', many=True, read_only=True)
+    duracao_min = serializers.SerializerMethodField()
+    variacao = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Relatorio
+        fields = [
+            'id', 'entrevista', 'nota_geral', 'resumo', 'criterios', 'pontos_melhorar',
+            'duracao_min', 'variacao', 'respostas', 'criado_em',
+        ]
+
+    def get_duracao_min(self, relatorio):
+        e = relatorio.entrevista
+        if not e.finalizada_em:
+            return None
+        return max(1, round((e.finalizada_em - e.criado_em).total_seconds() / 60))
+
+    def get_variacao(self, relatorio):
+        """Diferença de nota em relação à entrevista anterior do usuário que tem relatório."""
+        e = relatorio.entrevista
+        anterior = (Relatorio.objects
+                    .filter(entrevista__usuario=e.usuario, entrevista__criado_em__lt=e.criado_em)
+                    .order_by('-entrevista__criado_em')
+                    .first())
+        if anterior is None:
+            return None
+        return round(relatorio.nota_geral - anterior.nota_geral, 1)

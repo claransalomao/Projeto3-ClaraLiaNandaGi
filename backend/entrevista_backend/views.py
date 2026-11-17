@@ -11,11 +11,12 @@ from rest_framework.response import Response
 from .analise_vaga import analisar_vaga
 from .entrevista_ia import avaliar_resposta, gerar_pergunta
 from .gemini import GeminiError
-from .models import AnaliseVaga, Entrevista, Pergunta
+from .models import AnaliseVaga, Entrevista, Pergunta, Relatorio
+from .relatorio_ia import gerar_relatorio
 from .serializers import (
     AnaliseVagaSerializer, CadastroSerializer, EntrevistaResumoSerializer,
     EntrevistaSerializer, LoginSerializer, NovaEntrevistaSerializer,
-    PerguntaSerializer, UserSerializer,
+    PerguntaSerializer, RelatorioSerializer, UserSerializer,
 )
 
 
@@ -293,3 +294,39 @@ def api_encerrar(request, entrevista_id):
         entrevista.finalizada_em = timezone.now()
         entrevista.save()
     return Response(EntrevistaSerializer(entrevista).data)
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def api_relatorio(request, entrevista_id):
+    """GET: devolve o relatório (gera com a IA na primeira vez).
+    POST: gera o relatório de novo, substituindo o anterior."""
+    entrevista = _entrevista_do_usuario(request, entrevista_id)
+
+    if not entrevista.finalizada:
+        return Response({'detail': 'Finalize a entrevista antes de ver o relatório.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    relatorio = Relatorio.objects.filter(entrevista=entrevista).first()
+    if relatorio and request.method == 'GET':
+        return Response(RelatorioSerializer(relatorio).data)
+
+    notas = [p.nota for p in entrevista.perguntas.all() if p.nota is not None]
+    if not notas:
+        return Response({'detail': 'Responda pelo menos uma pergunta para gerar o relatório.'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        gerado = gerar_relatorio(entrevista)
+    except GeminiError as e:
+        return Response({'detail': str(e)}, status=e.status)
+
+    relatorio, _ = Relatorio.objects.update_or_create(
+        entrevista=entrevista,
+        defaults={
+            'nota_geral': round(sum(notas) / len(notas), 1),
+            'resumo': gerado['resumo'],
+            'criterios': gerado['criterios'],
+            'pontos_melhorar': gerado['pontos_melhorar'],
+        },
+    )
+    return Response(RelatorioSerializer(relatorio).data, status=status.HTTP_201_CREATED)

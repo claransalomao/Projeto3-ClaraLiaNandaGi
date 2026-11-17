@@ -15,13 +15,13 @@
 - [x] Implementar cadastro e login
 - [x] Implementar a análise da vaga com IA
 - [x] Implementar a entrevista com IA
-- [ ] Criar as telas de nova entrevista e de entrevista
+- [x] Criar as telas de nova entrevista e de entrevista
 
 ### Sprint 2 (16/11 a 19/11)
 
 **Entrega:** relatório de feedback, histórico, interface finalizada e deploy.
 
-- [ ] Implementar o relatório de feedback com IA
+- [x] Implementar o relatório de feedback com IA
 - [ ] Criar a tela de relatório
 - [ ] Criar a tela de histórico
 - [ ] Finalizar a interface

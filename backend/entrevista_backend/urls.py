@@ -15,4 +15,5 @@ urlpatterns = [
     path('entrevistas/<int:entrevista_id>/pular/', views.api_pular),
     path('entrevistas/<int:entrevista_id>/proxima/', views.api_proxima),
     path('entrevistas/<int:entrevista_id>/encerrar/', views.api_encerrar),
+    path('entrevistas/<int:entrevista_id>/relatorio/', views.api_relatorio),
 ]

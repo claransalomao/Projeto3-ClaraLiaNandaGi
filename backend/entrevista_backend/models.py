@@ -86,3 +86,15 @@ class Pergunta(models.Model):
 
     def __str__(self):
         return f'{self.ordem}. {self.tema}'
+
+
+class Relatorio(models.Model):
+    entrevista = models.OneToOneField(Entrevista, on_delete=models.CASCADE, related_name='relatorio')
+    nota_geral = models.FloatField()  # média das notas das respostas
+    resumo = models.TextField()
+    criterios = models.JSONField(default=list)  # [{"nome": "Clareza", "nota": 8.5}, ...]
+    pontos_melhorar = models.JSONField(default=list)  # 3 frases
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Relatório da entrevista {self.entrevista_id} ({self.nota_geral})'
