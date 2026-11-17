@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import Entrevista from './pages/Entrevista'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import Relatorio from './pages/Relatorio'
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
         element={
           <RotaProtegida>
             <Entrevista />
+          </RotaProtegida>
+        }
+      />
+      <Route
+        path="/entrevistas/:id/relatorio"
+        element={
+          <RotaProtegida>
+            <Relatorio />
           </RotaProtegida>
         }
       />

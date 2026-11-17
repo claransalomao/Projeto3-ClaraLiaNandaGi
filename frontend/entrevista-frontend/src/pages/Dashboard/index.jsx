@@ -38,7 +38,11 @@ export default function Dashboard() {
                 {entrevistas.slice(0, 5).map((e) => (
                   <li key={e.id}>
                     <Link
-                      to={`/entrevistas/${e.id}`}
+                      to={
+                        e.finalizada && e.nota_media !== null
+                          ? `/entrevistas/${e.id}/relatorio`
+                          : `/entrevistas/${e.id}`
+                      }
                       className="flex items-center justify-between gap-2 rounded-lg bg-surface px-3 py-2.5 hover:bg-primary-soft"
                     >
                       <span className="min-w-0">

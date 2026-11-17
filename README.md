@@ -22,7 +22,7 @@
 **Entrega:** relatório de feedback, histórico, interface finalizada e deploy.
 
 - [x] Implementar o relatório de feedback com IA
-- [ ] Criar a tela de relatório
+- [x] Criar a tela de relatório
 - [ ] Criar a tela de histórico
 - [ ] Finalizar a interface
 - [ ] Fazer o deploy

@@ -215,6 +215,9 @@ export default function Entrevista() {
   const numeroAtual = atual ? atual.ordem : Math.min(perguntas.length, entrevista.num_perguntas)
   const concluidas = perguntas.filter((p) => p.respondida_em || p.pulada).length
   const progresso = (concluidas / entrevista.num_perguntas) * 100
+  // Calculada aqui porque nota_media do backend só vem no carregamento da página
+  const notas = perguntas.filter((p) => p.nota !== null).map((p) => p.nota)
+  const notaMedia = notas.length ? Math.round((notas.reduce((a, b) => a + b, 0) / notas.length) * 10) / 10 : null
 
   return (
     <div className="min-h-screen">
@@ -314,23 +317,47 @@ export default function Entrevista() {
             {entrevista.finalizada && (
               <div className="rounded-2xl bg-ink p-6 text-white">
                 <p className="text-sm text-gray-300">Entrevista finalizada</p>
-                {entrevista.nota_media !== null ? (
+                {notaMedia !== null ? (
                   <p className="mt-1 font-display text-4xl font-semibold">
-                    {formatarNota(entrevista.nota_media)}
+                    {formatarNota(notaMedia)}
                     <span className="text-xl text-gray-400"> /10</span>
                   </p>
                 ) : (
                   <p className="mt-1 font-display text-2xl font-semibold">Sem respostas avaliadas</p>
                 )}
-                <p className="mt-2 text-gray-300">
-                  Revise o feedback de cada resposta acima. O relatório completo chega em breve.
-                </p>
-                <Link
-                  to="/dashboard"
-                  className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-primary-dark"
-                >
-                  Nova entrevista
-                </Link>
+                {notaMedia !== null ? (
+                  <>
+                    <p className="mt-2 text-gray-300">
+                      Veja o relatório completo, com a avaliação por critério e o que melhorar.
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <Link
+                        to={`/entrevistas/${id}/relatorio`}
+                        className="rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-primary-dark"
+                      >
+                        Ver relatório
+                      </Link>
+                      <Link
+                        to="/dashboard"
+                        className="rounded-xl border border-white/30 px-5 py-2.5 font-semibold hover:bg-white/10"
+                      >
+                        Nova entrevista
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-2 text-gray-300">
+                      Responda pelo menos uma pergunta para receber um relatório.
+                    </p>
+                    <Link
+                      to="/dashboard"
+                      className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 font-semibold hover:bg-primary-dark"
+                    >
+                      Nova entrevista
+                    </Link>
+                  </>
+                )}
               </div>
             )}
             <div ref={fimDoChat} />
