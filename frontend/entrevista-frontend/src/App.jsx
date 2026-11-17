@@ -3,6 +3,7 @@ import RotaProtegida from './components/RotaProtegida'
 import AnaliseVaga from './pages/AnaliseVaga'
 import Dashboard from './pages/Dashboard'
 import Entrevista from './pages/Entrevista'
+import Historico from './pages/Historico'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Relatorio from './pages/Relatorio'
@@ -18,6 +19,14 @@ function App() {
         element={
           <RotaProtegida>
             <Dashboard />
+          </RotaProtegida>
+        }
+      />
+      <Route
+        path="/historico"
+        element={
+          <RotaProtegida>
+            <Historico />
           </RotaProtegida>
         }
       />

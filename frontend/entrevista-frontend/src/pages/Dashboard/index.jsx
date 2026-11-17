@@ -9,7 +9,7 @@ function formatarNota(nota) {
   return nota.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 }
 
-// A evolução e a tela de histórico completa serão implementadas na Sprint 2
+// A evolução será implementada na Sprint 2; o histórico completo fica em /historico
 export default function Dashboard() {
   const { user } = useAuth()
   const [entrevistas, setEntrevistas] = useState([])
@@ -65,6 +65,11 @@ export default function Dashboard() {
                   </li>
                 ))}
               </ul>
+              {entrevistas.length > 0 && (
+                <Link to="/historico" className="mt-3 inline-block text-sm font-semibold text-primary">
+                  Ver todas →
+                </Link>
+              )}
             </section>
 
             <section className="rounded-2xl border border-gray-200 bg-white p-6">
