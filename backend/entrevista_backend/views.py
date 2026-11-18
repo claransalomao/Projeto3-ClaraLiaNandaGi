@@ -66,9 +66,15 @@ def api_logout(request):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def api_me(request):
+    if request.method == 'PATCH':
+        nome = str(request.data.get('nome', '')).strip()
+        if not nome:
+            return Response({'detail': 'O nome não pode ficar vazio.'}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.first_name = nome[:150]
+        request.user.save(update_fields=['first_name'])
     return Response(UserSerializer(request.user).data)
 
 

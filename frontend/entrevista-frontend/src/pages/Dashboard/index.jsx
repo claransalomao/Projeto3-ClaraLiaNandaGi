@@ -9,7 +9,70 @@ function formatarNota(nota) {
   return nota.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 }
 
-// A evolução será implementada na Sprint 2; o histórico completo fica em /historico
+// Gráfico de barras com as notas das últimas entrevistas finalizadas
+function Evolucao({ entrevistas }) {
+  const comNota = entrevistas
+    .filter((e) => e.finalizada && e.nota_media !== null)
+    .sort((a, b) => new Date(a.criado_em) - new Date(b.criado_em))
+    .slice(-8)
+
+  if (comNota.length === 0) {
+    return (
+      <section className="rounded-2xl border border-gray-200 bg-white p-6">
+        <h2 className="font-semibold">Sua evolução</h2>
+        <p className="mt-2 text-sm text-gray-500">Finalize uma entrevista para ver sua evolução aqui.</p>
+      </section>
+    )
+  }
+
+  const notas = comNota.map((e) => e.nota_media)
+  const media = notas.reduce((a, b) => a + b, 0) / notas.length
+  const ultima = notas[notas.length - 1]
+  const anterior = notas.length > 1 ? notas[notas.length - 2] : null
+  const variacao = anterior !== null ? ultima - anterior : null
+
+  return (
+    <section className="rounded-2xl border border-gray-200 bg-white p-6">
+      <h2 className="font-semibold">Sua evolução</h2>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-xl bg-surface p-3">
+          <span className="text-xs text-gray-500">Nota média</span>
+          <strong className="block font-display text-2xl font-semibold">{formatarNota(media)}</strong>
+        </div>
+        <div className="rounded-xl bg-surface p-3">
+          <span className="text-xs text-gray-500">Última</span>
+          <strong className="block font-display text-2xl font-semibold">
+            {formatarNota(ultima)}
+            {variacao !== null && variacao !== 0 && (
+              <span className={`ml-1 text-sm ${variacao > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                {variacao > 0 ? '▲' : '▼'} {formatarNota(Math.abs(variacao))}
+              </span>
+            )}
+          </strong>
+        </div>
+      </div>
+
+      <div
+        className="mt-5 flex h-32 items-end gap-2 border-b border-gray-200"
+        role="img"
+        aria-label={`Notas das últimas entrevistas: ${notas.map(formatarNota).join(', ')}`}
+      >
+        {comNota.map((e, i) => (
+          <div key={e.id} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
+            <span className="text-[11px] font-semibold text-gray-600">{formatarNota(e.nota_media)}</span>
+            <div
+              className={`w-full rounded-t-md ${i === comNota.length - 1 ? 'bg-primary' : 'bg-primary/30'}`}
+              style={{ height: `${Math.max(e.nota_media * 10, 4)}%` }}
+            />
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-xs text-gray-500">Últimas {comNota.length} entrevistas finalizadas</p>
+    </section>
+  )
+}
+
 export default function Dashboard() {
   const { user } = useAuth()
   const [entrevistas, setEntrevistas] = useState([])
@@ -29,6 +92,8 @@ export default function Dashboard() {
           <NovaEntrevista />
 
           <aside className="space-y-6">
+            <Evolucao entrevistas={entrevistas} />
+
             <section className="rounded-2xl border border-gray-200 bg-white p-6">
               <h2 className="font-semibold">Suas entrevistas</h2>
               {entrevistas.length === 0 && (

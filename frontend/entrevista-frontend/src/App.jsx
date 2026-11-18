@@ -6,6 +6,7 @@ import Entrevista from './pages/Entrevista'
 import Historico from './pages/Historico'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import Perfil from './pages/Perfil'
 import Relatorio from './pages/Relatorio'
 
 function App() {
@@ -35,6 +36,14 @@ function App() {
         element={
           <RotaProtegida>
             <AnaliseVaga />
+          </RotaProtegida>
+        }
+      />
+      <Route
+        path="/perfil"
+        element={
+          <RotaProtegida>
+            <Perfil />
           </RotaProtegida>
         }
       />

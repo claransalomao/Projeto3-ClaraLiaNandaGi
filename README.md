@@ -23,8 +23,8 @@
 
 - [x] Implementar o relatório de feedback com IA
 - [x] Criar a tela de relatório
-- [ ] Criar a tela de histórico
-- [ ] Finalizar a interface
+- [x] Criar a tela de histórico
+- [x] Finalizar a interface
 - [ ] Fazer o deploy
 ## Tecnologias
 

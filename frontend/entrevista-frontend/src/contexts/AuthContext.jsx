@@ -29,6 +29,11 @@ export function AuthProvider({ children }) {
     return api.post('/cadastro/', { nome, email, senha }).then(salvarSessao)
   }
 
+  // Atualiza o nome no backend e no app (usado na página de Perfil)
+  function atualizarNome(nome) {
+    return api.patch('/me/', { nome }).then((res) => setUser(res.data))
+  }
+
   function logout() {
     // mesmo se o servidor falhar, a sessão local é encerrada
     return api
@@ -41,7 +46,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, carregando, login, cadastro, logout }}>
+    <AuthContext.Provider value={{ user, carregando, login, cadastro, logout, atualizarNome }}>
       {children}
     </AuthContext.Provider>
   )
