@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 import dj_database_url
 
@@ -22,12 +23,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r*y8@117yn!46^q9q(@qyr9qm*n0vk2*2s9m9tf^%9w@gjc5&g'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-r*y8@117yn!46^q9q(@qyr9qm*n0vk2*2s9m9tf^%9w@gjc5&g',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Localmente fica True; no Render a variável DEBUG=False desliga
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.onrender.com']
+
+# Necessário para o login do /admin/ funcionar em HTTPS no Render
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -145,4 +154,4 @@ REST_FRAMEWORK = {
 }
 
 # CORS: libera o frontend React
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
