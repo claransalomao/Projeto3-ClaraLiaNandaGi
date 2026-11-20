@@ -67,3 +67,7 @@ Acesse http://localhost:5173. O frontend chama o backend em `http://localhost:80
 | GET | `/me/` | sim | Dados do usuário logado |
 
 Rotas autenticadas exigem o header `Authorization: Token <token>`.
+
+
+
+DEPLOY:  https://projeto3-frontend-mocha.vercel.app 
